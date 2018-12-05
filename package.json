@@ -1,0 +1,47 @@
+{
+  "name": "virtualbeams-virtual-slides",
+  "version": "0.0.1",
+  "description": "Virtual slides for Ionic 3",
+  "main": "./dist/src/index.js",
+  "typings": "./dist/src/index.d.ts",
+  "files": "dist",
+  "scripts": {
+    "ngc": "ngc",
+    "build": "rm -rf aot dist && npm run ngc",
+    "publishPackage": "npm run build && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/virtualbeams/virtualbeams-virtual-slides.git"
+  },
+  "keywords": ["ionic", "angular", "virtual-slides"],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/virtualbeams/virtualbeams-virtual-slides/issues"
+  },
+  "homepage": "https://github.com/virtualbeams/virtualbeams-virtual-slides#readme",
+  "contributors": [
+    {
+      "name": "Sebastian Pernett",
+      "email": "spernett@virtualbeams.com"
+    }, 
+    {
+      "name": "David Castro",
+      "email": "dcastro@virtualbeams.com"
+    }
+  ],
+  "devDependencies": {
+    "@angular/common": "5.2.11",
+    "@angular/compiler": "5.2.11",
+    "@angular/compiler-cli": "5.2.11",
+    "@angular/core": "5.2.11",
+    "@angular/forms": "5.2.11",
+    "@angular/platform-browser": "5.2.11",
+    "@angular/platform-browser-dynamic": "5.2.11",
+    "@types/node": "^6.0.60",
+    "ionic-angular": "3.9.2",
+    "zone.js": "^0.8.4",
+    "rxjs": "^5.4.0",
+    "typescript": "^2.3.4"
+  }
+}
