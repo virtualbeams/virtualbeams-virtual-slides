@@ -116,10 +116,12 @@ export class VirtualBeamsVirtualSlides {
   }
 
   public initSlides() {
+    const end = this.items.length > 2 ? 3 : this.items.length;
+    console.log('initSlides => ', { end, itemsLength: this.items.length });
     this.indexDisplayed = 0;
     this.start = 0;
-    this.end = 3;
-    this.renderItems = this.items.slice(0, 3);
+    this.end = end;
+    this.renderItems = this.items.slice(0, end);
     this.emitCurrentIndex();
   }
 
@@ -152,11 +154,15 @@ export class VirtualBeamsVirtualSlides {
   onSlideDrag(event: Slides) {
     this.ionSlideDrag.emit(event);
   }
+
   onSlideNextEnd(event: Slides) {
-    if (event._activeIndex === 2 && this.end !== this.items.length + 1)
-      this.sliceOriginalArray(++this.start, ++this.end);
-    this.indexDisplayed++;
-    this.slides.slideTo(1, 0, false);
+    if (this.end < this.items.length) {
+      if (event._activeIndex === 2) this.sliceOriginalArray(++this.start, ++this.end);
+      this.indexDisplayed++;
+      this.slides.slideTo(1, 0, false);
+    } else if (this.indexDisplayed < (this.items.length - 1)) {
+      this.indexDisplayed++;
+    }
     this.slides.onlyExternal = false;
     this.ionSlideNextEnd.emit(event);
   }
@@ -164,11 +170,33 @@ export class VirtualBeamsVirtualSlides {
   onSlideNextStart(event: Slides) {
     this.ionSlideNextStart.emit(event);
   }
+
   onSlidePrevEnd(event: Slides) {
-    this.indexDisplayed--;
     const next = this.start > 0 ? 1 : 0;
-    if (this.start > 0)
+    console.log('slidesIndex onSlidePrevEnd => before', {
+      displayItems: this.renderItems,
+      start: this.start,
+      end: this.end,
+      indexDisplayed: this.indexDisplayed,
+      items: this.items,
+      next
+    });
+    console.log('slices array prev ', { eventActiveIndex: event._activeIndex, renderItems: this.renderItems });
+    this.start
+    if (this.start > 0 && event._activeIndex == 0) {
       this.sliceOriginalArray(--this.start, --this.end);
+    }
+    if (this.start < this.indexDisplayed) {
+      this.indexDisplayed--;
+    }
+    console.log('slidesIndex onSlidePrevEnd => after', {
+      displayItems: this.renderItems,
+      start: this.start,
+      end: this.end,
+      indexDisplayed: this.indexDisplayed,
+      items: this.items,
+      next
+    });
     this.slides.slideTo(next, 0, false);
     this.slides.onlyExternal = false;
     this.ionSlidePrevEnd.emit(event);
@@ -194,6 +222,7 @@ export class VirtualBeamsVirtualSlides {
     this.slides.onlyExternal = true;
     this.ionSlideWillChange.emit(event);
   }
+
   public getRealIndex(currentIndex: number): number {
     let realIndex = this.start;
     switch (currentIndex) {
@@ -206,10 +235,12 @@ export class VirtualBeamsVirtualSlides {
       default:
         break;
     }
+    console.log('slidesIndex  getRealIndex => getActiveIndex ', { activeIndex: this.slides.getActiveIndex(), realIndex })
     return realIndex;
   }
 
   private sliceOriginalArray(start, end) {
+    console.log('slices array');
     this.renderItems = this.items.slice(start, end);
   }
 
