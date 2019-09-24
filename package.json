@@ -14,7 +14,11 @@
     "type": "git",
     "url": "git+https://github.com/virtualbeams/virtualbeams-virtual-slides.git"
   },
-  "keywords": ["ionic", "angular", "virtual-slides"],
+  "keywords": [
+    "ionic",
+    "angular",
+    "virtual-slides"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/virtualbeams/virtualbeams-virtual-slides/issues"
@@ -24,7 +28,7 @@
     {
       "name": "Sebastian Pernett",
       "email": "spernett@virtualbeams.com"
-    }, 
+    },
     {
       "name": "David Castro",
       "email": "dcastro@virtualbeams.com"

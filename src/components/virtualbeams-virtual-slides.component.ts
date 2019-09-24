@@ -116,10 +116,11 @@ export class VirtualBeamsVirtualSlides {
   }
 
   public initSlides() {
+    const end = this.items.length > 2 ? 3 : this.items.length;
     this.indexDisplayed = 0;
     this.start = 0;
-    this.end = 3;
-    this.renderItems = this.items.slice(0, 3);
+    this.end = end;
+    this.renderItems = this.items.slice(0, end);
     this.emitCurrentIndex();
   }
 
@@ -152,11 +153,15 @@ export class VirtualBeamsVirtualSlides {
   onSlideDrag(event: Slides) {
     this.ionSlideDrag.emit(event);
   }
+
   onSlideNextEnd(event: Slides) {
-    if (event._activeIndex === 2 && this.end !== this.items.length + 1)
-      this.sliceOriginalArray(++this.start, ++this.end);
-    this.indexDisplayed++;
-    this.slides.slideTo(1, 0, false);
+    if (this.end < this.items.length) {
+      if (event._activeIndex === 2) this.sliceOriginalArray(++this.start, ++this.end);
+      this.indexDisplayed++;
+      this.slides.slideTo(1, 0, false);
+    } else if (this.indexDisplayed < (this.items.length - 1)) {
+      this.indexDisplayed++;
+    }
     this.slides.onlyExternal = false;
     this.ionSlideNextEnd.emit(event);
   }
@@ -164,11 +169,16 @@ export class VirtualBeamsVirtualSlides {
   onSlideNextStart(event: Slides) {
     this.ionSlideNextStart.emit(event);
   }
+
   onSlidePrevEnd(event: Slides) {
-    this.indexDisplayed--;
-    const next = this.start > 0 ? 1 : 0;
-    if (this.start > 0)
+    const next = event._activeIndex == 0 && this.start == 0 ? 0 : 1;
+    if (this.start > 0 && event._activeIndex == 0) {
       this.sliceOriginalArray(--this.start, --this.end);
+    }
+    if (this.start < this.indexDisplayed) {
+      this.indexDisplayed--;
+    }
+    this.lockSwipeToNext = false;
     this.slides.slideTo(next, 0, false);
     this.slides.onlyExternal = false;
     this.ionSlidePrevEnd.emit(event);
@@ -194,6 +204,7 @@ export class VirtualBeamsVirtualSlides {
     this.slides.onlyExternal = true;
     this.ionSlideWillChange.emit(event);
   }
+
   public getRealIndex(currentIndex: number): number {
     let realIndex = this.start;
     switch (currentIndex) {
@@ -202,6 +213,9 @@ export class VirtualBeamsVirtualSlides {
         break;
       case 2:
         realIndex += 2;
+        break;
+      case 3:
+        realIndex = this.end - 1;
         break;
       default:
         break;
@@ -214,7 +228,9 @@ export class VirtualBeamsVirtualSlides {
   }
 
   private emitCurrentIndex(): void {
-    this.currentIndex.emit(this.getRealIndex(this.slides.getActiveIndex()))
+    const activeIndex = this.slides.getActiveIndex();
+    const realIndex = this.getRealIndex(activeIndex);
+    this.currentIndex.emit(realIndex);
   }
 
 }
