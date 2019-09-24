@@ -117,7 +117,6 @@ export class VirtualBeamsVirtualSlides {
 
   public initSlides() {
     const end = this.items.length > 2 ? 3 : this.items.length;
-    console.log('initSlides => ', { end, itemsLength: this.items.length });
     this.indexDisplayed = 0;
     this.start = 0;
     this.end = end;
@@ -172,31 +171,14 @@ export class VirtualBeamsVirtualSlides {
   }
 
   onSlidePrevEnd(event: Slides) {
-    const next = this.start > 0 ? 1 : 0;
-    console.log('slidesIndex onSlidePrevEnd => before', {
-      displayItems: this.renderItems,
-      start: this.start,
-      end: this.end,
-      indexDisplayed: this.indexDisplayed,
-      items: this.items,
-      next
-    });
-    console.log('slices array prev ', { eventActiveIndex: event._activeIndex, renderItems: this.renderItems });
-    this.start
+    const next = event._activeIndex == 0 && this.start == 0 ? 0 : 1;
     if (this.start > 0 && event._activeIndex == 0) {
       this.sliceOriginalArray(--this.start, --this.end);
     }
     if (this.start < this.indexDisplayed) {
       this.indexDisplayed--;
     }
-    console.log('slidesIndex onSlidePrevEnd => after', {
-      displayItems: this.renderItems,
-      start: this.start,
-      end: this.end,
-      indexDisplayed: this.indexDisplayed,
-      items: this.items,
-      next
-    });
+    this.lockSwipeToNext = false;
     this.slides.slideTo(next, 0, false);
     this.slides.onlyExternal = false;
     this.ionSlidePrevEnd.emit(event);
@@ -232,20 +214,23 @@ export class VirtualBeamsVirtualSlides {
       case 2:
         realIndex += 2;
         break;
+      case 3:
+        realIndex = this.end - 1;
+        break;
       default:
         break;
     }
-    console.log('slidesIndex  getRealIndex => getActiveIndex ', { activeIndex: this.slides.getActiveIndex(), realIndex })
     return realIndex;
   }
 
   private sliceOriginalArray(start, end) {
-    console.log('slices array');
     this.renderItems = this.items.slice(start, end);
   }
 
   private emitCurrentIndex(): void {
-    this.currentIndex.emit(this.getRealIndex(this.slides.getActiveIndex()))
+    const activeIndex = this.slides.getActiveIndex();
+    const realIndex = this.getRealIndex(activeIndex);
+    this.currentIndex.emit(realIndex);
   }
 
 }
