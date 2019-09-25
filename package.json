@@ -1,6 +1,6 @@
 {
   "name": "virtualbeams-virtual-slides",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "Virtual slides for Ionic 3",
   "main": "./dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
